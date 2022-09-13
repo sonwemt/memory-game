@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ShowCardGrid from "../components/ShowCardgrid";
 import uniqid from "uniqid";
 import Header from "./Header";
@@ -35,18 +35,6 @@ export default function CardGrid() {
 
   const [score, setScore] = useState(0);
   const [bestScore, setBestScore] = useState(0);
-
-  const reorderCards = () => {
-    let newArray = currentCardOrder.slice(0);
-    for(let i = newArray.length - 1; i > 0; i -= 1) { 
-      let j = Math.floor(Math.random() * (i + 1));
-      [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
-    }
-    for(let i = newArray.length; i > 0; i -= 1) { 
-      newArray[i - 1].index = i - 1;
-    }
-    setCardOrder(newArray);
-  }
  
   const handleClick = (id) => {
     if(!clickedCards.find((heldId) => id === heldId)) {
@@ -59,8 +47,24 @@ export default function CardGrid() {
       setClickedCards([]);
       setScore(0);
     }
-    reorderCards();
   }
+
+  useEffect(() => {
+    function shuffleCards() {
+      let newArray = currentCardOrder.slice(0);
+      for(let i = newArray.length - 1; i > 0; i -= 1) { 
+        let j = Math.floor(Math.random() * (i + 1));
+        [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+      }
+      for(let i = newArray.length; i > 0; i -= 1) { 
+        newArray[i - 1].index = i - 1;
+      }
+      setCardOrder(newArray);
+    }
+
+    shuffleCards();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [score])
 
   return(
     <div>
