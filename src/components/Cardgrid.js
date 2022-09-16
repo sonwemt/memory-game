@@ -3,33 +3,35 @@ import ShowCardGrid from "../components/ShowCardgrid";
 import uniqid from "uniqid";
 import Header from "./Header";
 
+const initialOrder = [
+  {
+    image: 'placeholder1',
+    name: 'name1',
+    id: uniqid(),
+    index: 0,
+  },
+  {
+    image: 'placeholder2',
+    name: 'name2',
+    id: uniqid(),
+    index: 1,
+  },
+  {
+    image: 'placeholder3',
+    name: 'name3',
+    id: uniqid(),
+    index: 2,
+  },
+  {
+    image: 'placeholder4',
+    name: 'name4',
+    id: uniqid(),
+    index: 3,
+  },
+];
+
 export default function CardGrid() {
-  const [currentCardOrder, setCardOrder] = useState([
-    {
-      image: 'placeholder1',
-      name: 'name1',
-      id: uniqid(),
-      index: 0,
-    },
-    {
-      image: 'placeholder2',
-      name: 'name2',
-      id: uniqid(),
-      index: 1,
-    },
-    {
-      image: 'placeholder3',
-      name: 'name3',
-      id: uniqid(),
-      index: 2,
-    },
-    {
-      image: 'placeholder4',
-      name: 'name4',
-      id: uniqid(),
-      index: 3,
-    },
-  ]);
+  const [currentCardOrder, setCardOrder] = useState(initialOrder);
 
   const [clickedCards, setClickedCards] = useState([]);
 
@@ -48,22 +50,20 @@ export default function CardGrid() {
       setScore(0);
     }
   }
+  function shuffleCards() {
+    let newArray = initialOrder;
+    for(let i = newArray.length - 1; i > 0; i -= 1) { 
+      let j = Math.floor(Math.random() * (i + 1));
+      [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+    }
+    for(let i = newArray.length; i > 0; i -= 1) { 
+      newArray[i - 1].index = i - 1;
+    }
+    setCardOrder(newArray);
+  }
 
   useEffect(() => {
-    function shuffleCards() {
-      let newArray = currentCardOrder.slice(0);
-      for(let i = newArray.length - 1; i > 0; i -= 1) { 
-        let j = Math.floor(Math.random() * (i + 1));
-        [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
-      }
-      for(let i = newArray.length; i > 0; i -= 1) { 
-        newArray[i - 1].index = i - 1;
-      }
-      setCardOrder(newArray);
-    }
-
     shuffleCards();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [score])
 
   return(
