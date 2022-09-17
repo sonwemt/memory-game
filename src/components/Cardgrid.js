@@ -3,7 +3,7 @@ import ShowCardGrid from "../components/ShowCardgrid";
 import uniqid from "uniqid";
 import Header from "./Header";
 
-const initialOrder = [
+let cardArray = [
   {
     image: 'placeholder1',
     name: 'name1',
@@ -30,8 +30,17 @@ const initialOrder = [
   },
 ];
 
+function shuffleOrder() {
+  for(let i = cardArray.length - 1; i > 0; i -= 1) { 
+    let j = Math.floor(Math.random() * (i + 1));
+    [cardArray[i], cardArray[j]] = [cardArray[j], cardArray[i]];
+  }
+  cardArray.forEach((obj, i) => obj.index = i);
+}
+
 export default function CardGrid() {
-  const [currentCardOrder, setCardOrder] = useState(initialOrder);
+  shuffleOrder();
+  const [currentOrder, setCurrentOrder] = useState(cardArray);
 
   const [clickedCards, setClickedCards] = useState([]);
 
@@ -50,26 +59,16 @@ export default function CardGrid() {
       setScore(0);
     }
   }
-  function shuffleCards() {
-    let newArray = initialOrder;
-    for(let i = newArray.length - 1; i > 0; i -= 1) { 
-      let j = Math.floor(Math.random() * (i + 1));
-      [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
-    }
-    for(let i = newArray.length; i > 0; i -= 1) { 
-      newArray[i - 1].index = i - 1;
-    }
-    setCardOrder(newArray);
-  }
 
   useEffect(() => {
-    shuffleCards();
+    shuffleOrder();
+    setCurrentOrder(cardArray);
   }, [score])
 
   return(
     <div>
       <Header score={score} bestScore={bestScore} />
-      <ShowCardGrid currentCardOrder={currentCardOrder} handleClick={handleClick} />
+      <ShowCardGrid currentOrder={currentOrder} handleClick={handleClick} />
     </div>
   )
 }
